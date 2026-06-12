@@ -3,25 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Invictus Assistant — Invictus International School, Amritsar</title>
+<title>InviChat — Invictus International School, Amritsar</title>
 <style>
   :root { --navy:#14264E; --red:#C8102E; --cream:#F7F8FA; --ink:#1a1a2e; --line:#E5E8EF; }
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; }
   body { font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--cream); display:flex; flex-direction:column; }
 
-  /* Header */
   .header { background:var(--navy); padding:16px 16px 12px; box-shadow:0 2px 8px rgba(20,38,78,.25); }
   .header-inner { max-width:680px; margin:0 auto; }
   .topline { display:flex; justify-content:space-between; align-items:center; }
   .wordmark { font-family:Georgia,'Times New Roman',serif; font-weight:800; font-size:24px; letter-spacing:.06em; color:#fff; }
   .wordmark .i { color:var(--red); }
+  .right-top { display:flex; align-items:center; gap:8px; }
   .status { font-size:11px; color:#D9DEE9; background:rgba(255,255,255,.12); padding:4px 10px; border-radius:999px; }
   .status::before { content:"●"; color:#4ADE80; margin-right:5px; }
   .subline { font-size:11px; letter-spacing:.08em; color:#9AA6BF; margin-top:4px; }
+  .langbar { display:flex; gap:6px; margin-top:10px; }
+  .langbtn { background:rgba(255,255,255,.1); color:#C9D2E3; border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:4px 12px; font-size:11px; font-weight:600; cursor:pointer; }
+  .langbtn.active { background:var(--red); color:#fff; border-color:var(--red); }
   .redline { height:3px; background:var(--red); }
 
-  /* Chat */
   .chat { flex:1; overflow-y:auto; padding:16px; }
   .chat-inner { max-width:680px; margin:0 auto; }
   .row { display:flex; margin-bottom:12px; }
@@ -34,18 +36,15 @@
   .bubble b { color:var(--navy); }
   .user .bubble b { color:#fff; }
 
-  /* Typing dots */
   .dots span { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--red); margin-right:4px; animation:bounce 1s infinite; }
   .dots span:nth-child(2){ animation-delay:.15s } .dots span:nth-child(3){ animation-delay:.3s }
   @keyframes bounce { 0%,60%,100%{ transform:translateY(0) } 30%{ transform:translateY(-6px) } }
 
-  /* Quick chips */
   .chips { padding:0 16px 8px; }
   .chips-inner { max-width:680px; margin:0 auto; display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
   .chip { flex-shrink:0; background:#fff; color:var(--navy); border:1px solid rgba(20,38,78,.18); border-radius:999px; padding:8px 14px; font-size:12px; font-weight:600; cursor:pointer; }
   .chip:active { background:var(--navy); color:#fff; }
 
-  /* Input */
   .inputbar { padding:6px 16px 14px; }
   .inputbar-inner { max-width:680px; margin:0 auto; }
   .inputbox { display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #E0E4EC; border-radius:999px; padding:8px 8px 8px 18px; box-shadow:0 2px 8px rgba(20,38,78,.08); }
@@ -54,6 +53,8 @@
   .send:disabled { opacity:.4; }
   .footnote { text-align:center; font-size:10px; color:#8B93A5; margin-top:8px; }
   .footnote a { color:var(--navy); }
+  .credit { text-align:center; font-size:10px; color:#A8AFBE; margin-top:3px; letter-spacing:.03em; }
+  .credit b { color:#6B7488; font-weight:600; }
 </style>
 </head>
 <body>
@@ -61,10 +62,15 @@
 <div class="header">
   <div class="header-inner">
     <div class="topline">
-      <div class="wordmark"><span class="i">i</span>NViCTUS</div>
-      <div class="status">Online</div>
+      <div class="wordmark"><span class="i">i</span>NV<span class="i">i</span>CHAT</div>
+      <div class="right-top"><div class="status">Online</div></div>
     </div>
-    <div class="subline">INTERNATIONAL SCHOOL · AMRITSAR — PARENT HELP ASSISTANT</div>
+    <div class="subline">INVICTUS INTERNATIONAL SCHOOL · AMRITSAR — PARENT HELP ASSISTANT</div>
+    <div class="langbar" id="langbar">
+      <button class="langbtn active" data-lang="en">English</button>
+      <button class="langbtn" data-lang="hi">हिंदी</button>
+      <button class="langbtn" data-lang="pa">ਪੰਜਾਬੀ</button>
+    </div>
   </div>
 </div>
 <div class="redline"></div>
@@ -78,90 +84,110 @@
 <div class="inputbar">
   <div class="inputbar-inner">
     <div class="inputbox">
-      <input id="msgInput" type="text" placeholder="Apna sawaal likhiye… (fee, admission, transport)" autocomplete="off">
+      <input id="msgInput" type="text" placeholder="Type your question… (fee, admission, transport)" autocomplete="off">
       <button class="send" id="sendBtn" aria-label="Send">➤</button>
     </div>
     <div class="footnote">For official confirmation: <a href="tel:+919877363333">+91 98773 63333</a> · info@invictusschool.edu.in</div>
+    <div class="credit">Designed &amp; Developed by <b>Mohit Sood</b></div>
   </div>
 </div>
 
 <script>
-/* ================= CONFIG (Phase 3 mein bharenge) ================= */
-const AI_ENDPOINT = "https://cadgnivmcftldsnqejkt.supabase.co/functions/v1/invictus-ai"; // Supabase Edge Function URL yahan aayega (Phase 3)
+/* ================= CONFIG ================= */
+const AI_ENDPOINT = "https://cadgnivmcftldsnqejkt.supabase.co/functions/v1/invictus-ai";
+let LANG = "en";
 
-/* ================= SCHOOL KNOWLEDGE BASE ================= */
+/* ================= TRILINGUAL KNOWLEDGE BASE ================= */
 const KB = {
-  fees:
-"💰 <b>School Fees 2026–27 (CBSE)</b>\n\n" +
-"One-time charges:\n" +
-"• Registration: ₹1,500\n• Admission Fee: ₹50,000\n• Refundable Security: ₹8,000\n\n" +
-"Monthly Fees:\n" +
-"• Kindergarten: ₹8,430\n• Class I–VII: ₹10,620\n• Class VIII–X: ₹11,125 (+₹420 Career Counselling)\n• Class XI–XII: ₹10,370 (+₹583 Career Counselling)\n\n" +
-"✦ Fee QUARTERLY pay hoti hai (April, July, October, January)\n" +
-"✦ Younger sibling ko quarterly fee mein 5% discount\n" +
-"✦ NO building fund, NO development fee, NO donation-based admission",
-
-  admission:
-"📝 <b>Admission Process</b>\n\n" +
-"1. Registration form bharein (online ya offline)\n" +
-"2. Interaction/test ki date lein\n" +
-"3. Result ke basis par admission form milega\n" +
-"4. Form result ke 3 din ke andar submit karein\n" +
-"5. Form documents aur fees ke saath accept hota hai (fee cheque se)\n\n" +
-"Entry criteria:\n• LKG–Class II: child se interaction\n• Class III onwards: written test\n• Class 10 (International): interest inventory test",
-
-  documents:
-"📄 <b>Admission ke liye Documents</b>\n\n" +
-"• Medical fitness certificate\n" +
-"• Birth certificate (attested copy)\n" +
-"• Previous year ka progress card (Class I onwards)\n" +
-"• School leaving certificate (agar ho)\n" +
-"• Aadhar card & passport copy\n" +
-"• Passport size photos — child, mother & father",
-
-  transport:
-"🚌 <b>Transport (AC, GPS-enabled buses)</b>\n\n" +
-"Registration: ₹1,000/year\n\n" +
-"Monthly charges (distance-wise):\n" +
-"• 0–4 km: ₹3,000\n• 4–8 km: ₹3,500\n• 8–12 km: ₹4,000\n• 12–16 km: ₹4,500\n• 16–20 km: ₹5,000\n\n" +
-"Har bus mein individual tracking hai. 📍",
-
-  contact:
-"📞 <b>Contact Information</b>\n\n" +
-"Phone: +91 98773 63333\n" +
-"Email: info@invictusschool.edu.in\n" +
-"WhatsApp: wa.me/919877363333\n" +
-"Website: invictusschool.edu.in\n\n" +
-"📍 Silver Oak Enclave, Loharka Road, Amritsar, Punjab 143001",
-
-  about:
-"🏫 <b>About Invictus</b>\n\n" +
-"Invictus International School ek K-12 co-educational International Day School hai (est. 2014), CBSE affiliated. Hum Cambridge Pathway (CAIE) aur AP courses bhi offer karte hain.\n\n" +
-"Campus fully air-conditioned hai, har classroom mein interactive smartboard. Motto: <b>Lead by Example</b> ✨",
+en: {
+fees:
+"💰 <b>School Fees 2026–27 (CBSE)</b>\n\nOne-time charges:\n• Registration: ₹1,500\n• Admission Fee: ₹50,000\n• Refundable Security: ₹8,000\n\nMonthly Fees:\n• Kindergarten: ₹8,430\n• Class I–VII: ₹10,620\n• Class VIII–X: ₹11,125 (+₹420 Career Counselling)\n• Class XI–XII: ₹10,370 (+₹583 Career Counselling)\n\n✦ Fees are paid quarterly (April, July, October, January)\n✦ 5% discount on quarterly fee for younger sibling\n✦ No building fund, no development fee, no donation-based admission",
+admission:
+"📝 <b>Admission Process</b>\n\n1. Fill the registration form (online or offline)\n2. Take the interaction/test date\n3. Admission form is given based on the result\n4. Submit the form within 3 days of results\n5. Form is accepted with documents and fees (fee by cheque)\n\nEntry criteria:\n• LKG–Class II: interaction with the child\n• Class III onwards: written test\n• Class 10 (International): interest inventory test",
+documents:
+"📄 <b>Documents Required for Admission</b>\n\n• Medical fitness certificate\n• Birth certificate (attested copy)\n• Progress card of previous year (Class I onwards)\n• School leaving certificate (if any)\n• Aadhar card & passport copy\n• Passport size photos — child, mother & father",
+transport:
+"🚌 <b>Transport (AC, GPS-enabled buses)</b>\n\nRegistration: ₹1,000/year\n\nMonthly charges (by distance):\n• 0–4 km: ₹3,000\n• 4–8 km: ₹3,500\n• 8–12 km: ₹4,000\n• 12–16 km: ₹4,500\n• 16–20 km: ₹5,000\n\nEvery bus has individual tracking. 📍",
+contact:
+"📞 <b>Contact Information</b>\n\nPhone: +91 98773 63333\nEmail: info@invictusschool.edu.in\nWhatsApp: wa.me/919877363333\nWebsite: invictusschool.edu.in\n\n📍 Silver Oak Enclave, Loharka Road, Amritsar, Punjab 143001",
+about:
+"🏫 <b>About Invictus</b>\n\nInvictus International School is a K-12 co-educational International Day School (est. 2014), affiliated to CBSE. We also offer the Cambridge Pathway (CAIE) and AP courses.\n\nThe campus is fully air-conditioned with interactive smartboards in every classroom. Motto: <b>Lead by Example</b> ✨",
+welcome:
+"Sat Sri Akal! 🙏 Welcome to <b>Invictus International School, Amritsar</b>.\n\nI am <b>InviChat</b> — ask me about fees, admission, documents, transport, contact, or any general question. Choose your language above! 😊",
+greet:
+"Sat Sri Akal! 🙏 I am InviChat. You can ask me about fees, admission, documents, transport or contact — or any general question!",
+switched: "Language set to <b>English</b>. How can I help you? 😊",
+fallback:
+"I don't have the exact answer to this yet. 🙏\n\nPlease contact the school office:\n📞 +91 98773 63333\n✉️ info@invictusschool.edu.in\n\nYou can surely ask me about fees, admission, documents or transport!"
+},
+hi: {
+fees:
+"💰 <b>स्कूल फीस 2026–27 (CBSE)</b>\n\nएक बार के शुल्क:\n• रजिस्ट्रेशन: ₹1,500\n• एडमिशन फीस: ₹50,000\n• रफंडेबल सिक्योरिटी: ₹8,000\n\nमासिक फीस:\n• किंडरगार्टन: ₹8,430\n• कक्षा I–VII: ₹10,620\n• कक्षा VIII–X: ₹11,125 (+₹420 करियर काउंसलिंग)\n• कक्षा XI–XII: ₹10,370 (+₹583 करियर काउसलिंग)\n\n✦ फीस तिमाही जमा होती है (अप्रैल, जुलाई, अक्बर, जनवरी)\n✦ छोटे भाई/बहन को तिमाही फीस में 5% छूट\n✦ कई बिल्डिंग फंड नहीं, कोई डोनेशन आधारित एडमिशन नहीं",
+admission:
+"📝 <b>एडमिशन प्रक्रिया</b>\n\n1. रजिस्ट्रेशन फॉर्म भरें (ऑनलाइन या ऑफलाइन)\n2. इंटरैक्शन/टेस्ट की तारीख ल\n3. रिज़ल्ट के आधार पर एडमिशन फॉर्म मिलेगा\n4. रज़ल्ट के 3 दिन के अंदर फॉर्म जमा करें\n5. फॉर्म दस्तावेज़ों और फीस के साथ स्वीकार होता है (फीस चेक से)\n\nप्रवेश मापदंड:\n• LKG–कक्षा II: बच्चे से इंटरैक्शन\n• कक्षा III से आगे: लिखित परीक्षा\n• कक्षा 10 (इंटरनेशनल): इंटरेस्ट इन्वेंटरी टेस्ट",
+documents:
+"📄 <b>एडमिशन के लिए ज़ररी दस्तावेज़</b>\n\n• मेडिकल फिटनेस सर्टिफिकेट\n• जन्म प्रमाण पत्र (सत्यापित कॉपी)\n• पिछले वर्ष का प्रोग्रेस कार्ड (कक्षा I से)\n• स्कूल छोड़ने का प्रमाण पत्र (यदि हो)\n• आधार कार्ड और पासपर्ट कॉपी\n• पासपोर्ट साइज़ फोटो — बच्चा, माता व पिता",
+transport:
+"🚌 <b>ट्रांसपोर्ट (AC, GPS बसें)</b>\n\nरजिस्ट्रेशन: ₹1,000/वर्ष\n\nमासिक शुल्क (दूरी अनुसार):\n• 0–4 किमी: ₹3,000\n• 4–8 किमी: ₹3,500\n• 8–12 किमी: ₹4,000\n• 12–16 किमी: ₹4,500\n• 16–20 किमी: ₹5,000\n\nहर बस में इंडविजुअल ट्रैकिंग है। 📍",
+contact:
+"📞 <b>संपर जानकारी</b>\n\nफोन: +91 98773 63333\nईमेल: info@invictusschool.edu.in\nWhatsApp: wa.me/919877363333\nवेबसाइट: invictusschool.edu.in\n\n📍 सिल्वर ओक एनव, लोहारका रोड, अमृतसर, पंजाब 143001",
+about:
+"🏫 <b>इन्विक्टस के बारे में</b>\n\nइन्विक्टस इटरनेशनल स्कूल एक K-12 सह-शिक्षा इंटरनेशनल डे स्कूल है (स्थापना 2014), CBSE से संबद्ध। हम Cambridge Pathway (CAIE) और AP कोर्स भी कराते हैं।\n\nपूरा कैंपस वातानुकूलित है, हर कक्षा में इंटरैक्टिव स्मार्टबोर्ड। आदर्श वाक्य: <b>Lead by Example</b> ✨",
+welcome:
+"सत श्री अकाल! 🙏 <b>इन्विक्टस इंटरनशनल स्कूल, अमृतसर</b> में आपका स्वागत है।\n\nमैं <b>InviChat</b> हूँ — फस, एडमिशन, दस्तावेज़, ट्रांसपोर्ट, संपर्क या कोई भी सामान्य सवाल पूछिए! 😊",
+greet:
+"सत श्री अकाल! 🙏 मैं InviChat हूँ। आप फीस, एडमिशन, दस्तावेज़, ट्रसपोर्ट या संपर्क के बारे में पूछ सकते हैं — या कोई भी सामान्य सवाल!",
+switched: "भाषा <b>हिंदी</b> चुन ली गई है। मैं आपकी क्या मदद करूँ? 😊",
+fallback:
+"मझे इसका सटीक जवाब अभी नहीं पता। 🙏\n\nकृपया स्कूल ऑफिस से संपर्क करें:\n📞 +91 98773 63333\n✉️ info@invictusschool.edu.in\n\nआप फीस, एडमिशन, दस्तवेज़ या ट्रांसपोर्ट के बारे में ज़रूर पूछ सकते हैं!"
+},
+pa: {
+fees:
+"💰 <b>ਸਕੂਲ ਫੀਸ 2026–27 (CBSE)</b>\n\nਇੱਕ ਵਾਰ ਦੇ ਖਰਚੇ:\n• ਰਜਿਸਟ੍ਰੇਸ਼ਨ: ₹1,500\n• ਦਾਖਲਾ ਫੀਸ: ₹50,000\n• ਰਿਫੰਡੇਬਲ ਸਕਓਰਿਟੀ: ₹8,000\n\nਮਹੀਨਾਵਾਰ ਫੀਸ:\n• ਕਿੰਡਰਗਾਰਟਨ: ₹8,430\n• ਜਮਾਤ I–VII: ₹10,620\n• ਜਮਾਤ VIII–X: ₹11,125 (+₹420 ਕਰੀਅਰ ਕਾਉਸਲਿੰਗ)\n• ਜਮਾਤ XI–XII: ₹10,370 (+₹583 ਕਰੀਅਰ ਕਾਉਂਸਲਿੰਗ)\n\n✦ ਫੀਸ ਤਿਮਾਹ ਜਮ੍ਹਾਂ ਹੁੰਦੀ ਹੈ (ਅਪ੍ਰਲ, ਜੁਲਾਈ, ਅਕਤੂਬਰ, ਜਨਵਰੀ)\n✦ ਛੋਟੇ ਭਣ/ਭਰਾ ਨੂੰ ਤਿਮਾਹੀ ਫੀਸ ਵਿੱਚ 5% ਛੋਟ\n✦ ਕੋਈ ਬਿਲਡਿੰਗ ਫਡ ਨਹੀਂ, ਕੋਈ ਡੋਨੇਸ਼ਨ ਆਧਾਰਿਤ ਦਾਖਲਾ ਨਹੀਂ",
+admission:
+"📝 <b>ਦਾਖਲਾ ਪ੍ਰਕਿਰਿਆ</b>\n\n1. ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਫਾਰਮ ਭਰੋ (ਆਨਲਾਈਨ ਜਾਂ ਆਫਲਾਈਨ)\n2. ਇੰਟਰੈਕਸ਼ਨ/ਟੈਸਟ ਦੀ ਤਾਰੀਖ ਲਓ\n3. ਨਤੀਜੇ ਦੇ ਆਧਾਰ 'ਤੇ ਦਾਖਲਾ ਫਾਰਮ ਮਿਲੇਗਾ\n4. ਨਤੀਜੇ ਦੇ 3 ਦਿਨਾਂ ਅੰਦਰ ਫਾਰਮ ਜਮ੍ਹਾਂ ਕਰੋ\n5. ਫਾਰਮ ਦਸਤਾਵਜ਼ਾਂ ਅਤੇ ਫੀਸ ਨਾਲ ਸਵੀਕਾਰ ਹੁੰਦਾ ਹੈ (ਫੀਸ ਚੈੱਕ ਰਾਹੀ)\n\nਦਾਖਲਾ ਮਾਪਦੰਡ:\n• LKG–ਜਮਤ II: ਬੱਚੇ ਨਾਲ ਇੰਟਰੈਕਸ਼ਨ\n• ਜਮਾਤ III ਤੋਂ ਅੱਗੇ: ਲਿਖਤੀ ਟੈਸਟ\n• ਜਮਾਤ 10 (ਇੰਟਰਨੈਸ਼ਨਲ): ਇੰਟਰੈਸਟ ਇਨਵੈਂਟਰੀ ਟੈਸਟ",
+documents:
+"📄 <b>ਦਾਖਲੇ ਲਈ ਲੜੀਂਦੇ ਦਸਤਾਵੇਜ਼</b>\n\n• ਮੈਡੀਕਲ ਫਿਟਨੈਸ ਸਰਟੀਫਕੇਟ\n• ਜਨਮ ਸਰਟੀਫਿਕੇਟ (ਤਸਦੀਕਸ਼ੁਦਾ ਕਾਪੀ)\n• ਪਿਛਲੇ ਸਾਲ ਦਾ ਪ੍ਰੋਗਰਸ ਕਾਰਡ (ਜਮਾਤ I ਤੋਂ)\n• ਸਕੂਲ ਛੱਡਣ ਦਾ ਸਰਟੀਫਿਕੇਟ (ਜੇ ਹੋਵ)\n• ਆਧਾਰ ਕਾਰਡ ਅਤੇ ਪਾਸਪੋਰਟ ਕਾਪੀ\n• ਪਾਸਪੋਰਟ ਸਾਈਜ਼ ਫੋਟੋ — ਬੱਚਾ, ਮਾਤਾ ਤੇ ਪਿਤਾ",
+transport:
+"🚌 <b>ਟਰਾਂਸਪੋਰਟ (AC, GPS ਬੱਸਾਂ)</b>\n\nਰਜਿਸਟ੍ਰੇਸ਼ਨ: ₹1,000/ਸਲ\n\nਮਹੀਨਾਵਾਰ ਖਰਚਾ (ਦੂਰੀ ਅਨੁਸਾਰ):\n• 0–4 ਕਿਮੀ: ₹3,000\n• 4–8 ਕਿਮੀ: ₹3,500\n• 8–12 ਕਿਮੀ: ₹4,000\n• 12–16 ਕਿਮੀ: ₹4,500\n• 16–20 ਕਿਮੀ: ₹5,000\n\nਹਰ ਬੱਸ ਵਿੱਚ ਇੰਡੀਵਿਜੁਅਲ ਟਰੈਕਿਗ ਹੈ। 📍",
+contact:
+"📞 <b>ਸੰਪਰਕ ਜਾਣਕਰੀ</b>\n\nਫੋਨ: +91 98773 63333\nਈਮੇਲ: info@invictusschool.edu.in\nWhatsApp: wa.me/919877363333\nਵੈੱਬਸਾਈਟ: invictusschool.edu.in\n\n📍 ਸਿਲਵਰ ਓਕ ਐਨਕਲੇਵ, ਲੋਹਾਰਕਾ ਰੋਡ, ਅੰਮ੍ਰਿਤਸਰ, ਪੰਜਾਬ 143001",
+about:
+"🏫 <b>ਇਨਵਿਕਟਸ ਬਾਰੇ</b>\n\nਇਨਵਿਕਟਸ ਇੰਟਰਨੈਸ਼ਨਲ ਸਕੂਲ ਇੱਕ K-12 ਸਹਿ-ਸਿਖਿਆ ਇੰਟਰਨੈਸ਼ਨਲ ਡੇ ਸਕਲ ਹੈ (ਸਥਾਪਨਾ 2014), CBSE ਨਾਲ ਜੜਿਆ। ਅਸੀਂ Cambridge Pathway (CAIE) ਅਤੇ AP ਕੋਰਸ ਵੀ ਕਰਵਾਉਂਦੇ ਹਾਂ।\n\nਪੂਰਾ ਕੈਂਪਸ ਏਅਰ-ਕੰਡੀਸ਼ਨਡ ਹੈ, ਹਰ ਜਮਾਤ ਵਿੱਚ ਇੰਟਰਐਕਟਿਵ ਸਮਾਰਟਬੋਰਡ। ਮੋਟੋ: <b>Lead by Example</b> ✨",
+welcome:
+"ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! 🙏 <b>ਇਨਵਿਕਟਸ ਇੰਟਰਨੈਸ਼ਨਲ ਸਕੂਲ, ਅੰਮ੍ਰਿਤਸਰ</b> ਵਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ।\n\nਮੈ <b>InviChat</b> ਹਾਂ — ਫੀਸ, ਦਾਖਲਾ, ਦਸਤਾਵੇਜ, ਟਰਾਂਸਪੋਰਟ, ਸੰਪਰਕ ਜਾਂ ਕੋਈ ਵੀ ਆਮ ਸਵਾਲ ਪੁੱਛੋ! 😊",
+greet:
+"ਸਤਿ ਸ੍ਰ ਅਕਾਲ! 🙏 ਮੈਂ InviChat ਹਾਂ। ਤੁਸੀਂ ਫੀਸ, ਦਾਖਲਾ, ਦਸਤਾਵੇਜ਼, ਟਰਾਂਸਪੋਰਟ ਜਾਂ ਸੰਪਰਕ ਬਾਰੇ ਪੁੱਛ ਸਕਦੇ ਹੋ — ਜਾਂ ਕਈ ਵੀ ਆਮ ਸਵਾਲ!",
+switched: "ਭਾਸ਼ਾ <b>ਪਜਾਬੀ</b> ਚੁਣ ਲਈ ਗਈ ਹੈ। ਮੈਂ ਤੁਹਾਡੀ ਕੀ ਮਦਦ ਕਰਾਂ? 😊",
+fallback:
+"ਮੈਨੂੰ ਇਸ ਦਾ ਸਹੀ ਜਵਾਬ ਅਜੇ ਨਹੀਂ ਪਤਾ। 🙏\n\nਕਿਰਪਾ ਕਰਕੇ ਸਕੂਲ ਦਫ਼ਤਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ:\n📞 +91 98773 63333\n✉️ info@invictusschool.edu.in\n\nਤੁਸੀਂ ਫੀਸ, ਦਾਖਲਾ, ਦਸਤਾਵੇਜ਼ ਜਾਂ ਟਰਾਂਸਪੋਰਟ ਬਾਰੇ ਜ਼ਰੂਰ ਪੁੱਛ ਸਕਦੇ ਹੋ!"
+}
 };
 
 const RULES = [
-  { key:"fees", words:["fee","fees","फीस","paisa","paise","kitni","charge","monthly","quarterly","cost","kharcha","price","installment","discount","sibling"] },
-  { key:"admission", words:["admission","dakhila","दाखिला","admit","entry","test","process","register","registration","apply","form","interview","interaction"] },
-  { key:"documents", words:["document","documents","kagaz","कागज","certificate","birth","aadhar","aadhaar","photo","papers","proof","tc","leaving"] },
-  { key:"transport", words:["bus","transport","van","gaadi","गाड़ी","pick","drop","route","conveyance","km","distance"] },
-  { key:"contact", words:["contact","phone","number","call","email","address","location","kahan","कहाँ","map","visit","whatsapp","baat"] },
-  { key:"about", words:["about","school","invictus","board","cbse","cambridge","curriculum","principal","kaisa","facilities","ac","smartboard"] },
+  { key:"fees", words:["fee","fees","फीस","ਫੀਸ","paisa","paise","kitni","charge","monthly","quarterly","cost","kharcha","price","installment","discount","sibling"] },
+  { key:"admission", words:["admission","dakhila","दाखिला","ਦਖਲਾ","admit","entry","test","process","register","registration","apply","form","interview","interaction"] },
+  { key:"documents", words:["document","documents","kagaz","कागज","दस्तावेज़","ਦਸਤਾਵੇਜ਼","certificate","birth","aadhar","aadhaar","photo","papers","proof","tc","leaving"] },
+  { key:"transport", words:["bus","transport","van","gaadi","गाड़","बस","ਬੱਸ","pick","drop","route","conveyance","km","distance"] },
+  { key:"contact", words:["contact","phone","number","call","email","address","location","kahan","कहाँ","संपर्क","ਸੰਪਰਕ","map","visit","whatsapp","baat"] },
+  { key:"about", words:["about","school","invictus","board","cbse","cambridge","curriculum","principal","kaisa","facilities","ac","smartboard","ਸਕੂਲ","स्कूल"] },
 ];
 
-const GREET_WORDS = ["hi","hello","hey","namaste","sat sri akal","ssa","good morning","good evening","hii","helo"];
+const GREET_WORDS = ["hi","hello","hey","namaste","sat sri akal","ssa","good morning","good evening","hii","helo","ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ","नमस्ते"];
+
+const LANG_NAME = { en:"English", hi:"Hindi", pa:"Punjabi" };
 
 /* ================= CHAT ENGINE ================= */
 const chatInner = document.getElementById("chatInner");
 const chatBox = document.getElementById("chat");
 const input = document.getElementById("msgInput");
 const sendBtn = document.getElementById("sendBtn");
-const history = []; // for AI context
+const history = [];
 
 function addBubble(role, html) {
   const row = document.createElement("div");
   row.className = "row " + (role === "user" ? "user" : "bot");
-  row.innerHTML = (role === "bot" ? '<div class="avatar"><span class="i">i</span>A</div>' : "") +
+  row.innerHTML = (role === "bot" ? '<div class="avatar"><span class="i">i</span>C</div>' : "") +
     '<div class="bubble">' + html + "</div>";
   chatInner.appendChild(row);
   chatBox.scrollTop = chatBox.scrollHeight;
@@ -175,14 +201,14 @@ function showTyping() {
 function ruleAnswer(q) {
   const t = q.toLowerCase();
   if (GREET_WORDS.some(w => t === w || t.startsWith(w + " ") || t.startsWith(w + "!"))) {
-    return "Sat Sri Akal! 🙏 Main Invictus Assistant hoon. Aap fees, admission, documents, transport ya contact ke baare mein pooch sakte hain.";
+    return KB[LANG].greet;
   }
   let best = null, bestScore = 0;
   for (const r of RULES) {
     const score = r.words.filter(w => new RegExp("(^|[^a-z])" + w + "([^a-z]|$)").test(t)).length;
     if (score > bestScore) { bestScore = score; best = r.key; }
   }
-  return bestScore > 0 ? KB[best] : null;
+  return bestScore > 0 ? KB[LANG][best] : null;
 }
 
 async function aiAnswer(q) {
@@ -191,16 +217,16 @@ async function aiAnswer(q) {
     const res = await fetch(AI_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: q, history: history.slice(-8) }),
+      body: JSON.stringify({
+        question: q + "\n\n(Important: reply in " + LANG_NAME[LANG] + " language.)",
+        history: history.slice(-8),
+      }),
     });
     if (!res.ok) return null;
     const data = await res.json();
     return data.answer || null;
   } catch (e) { return null; }
 }
-
-const FALLBACK =
-"Mujhe iska exact jawab abhi nahi pata. 🙏\n\nKripya school office se sampark karein:\n📞 +91 98773 63333\n✉️ info@invictusschool.edu.in\n\nAap fees, admission, documents ya transport ke baare mein zaroor pooch sakte hain!";
 
 async function send(textOverride) {
   const q = (textOverride ?? input.value).trim();
@@ -211,12 +237,11 @@ async function send(textOverride) {
   history.push({ role: "user", content: q });
 
   const typing = showTyping();
-  // Small delay so rule answers also feel natural
   await new Promise(r => setTimeout(r, 500));
 
   let ans = ruleAnswer(q);
   if (!ans) ans = await aiAnswer(q);
-  if (!ans) ans = FALLBACK;
+  if (!ans) ans = KB[LANG].fallback;
 
   typing.remove();
   addBubble("bot", ans);
@@ -228,7 +253,17 @@ async function send(textOverride) {
 sendBtn.addEventListener("click", () => send());
 input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
 
-/* Quick chips */
+/* Language switcher */
+document.querySelectorAll(".langbtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (btn.dataset.lang === LANG) return;
+    LANG = btn.dataset.lang;
+    document.querySelectorAll(".langbtn").forEach(b => b.classList.toggle("active", b === btn));
+    addBubble("bot", KB[LANG].switched);
+  });
+});
+
+/* Quick chips (English only) */
 const CHIPS = ["Fee structure?", "Admission process?", "Documents required?", "Bus charges?", "Contact number?"];
 const chipsBox = document.getElementById("chips");
 CHIPS.forEach(c => {
@@ -239,9 +274,7 @@ CHIPS.forEach(c => {
 });
 
 /* Welcome */
-addBubble("bot",
-"Sat Sri Akal! 🙏 Welcome to <b>Invictus International School, Amritsar</b>.\n\n" +
-"Main Invictus Assistant hoon — aap mujhse fees, admission, documents, transport ya contact ke baare mein pooch sakte hain. English, Hindi ya Punjabi — jaise comfortable ho! 😊");
+addBubble("bot", KB.en.welcome);
 </script>
 </body>
 </html>
