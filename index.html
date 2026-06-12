@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Invictus Assistant — Invictus International School, Amritsar</title>
+<style>
+  :root { --navy:#14264E; --red:#C8102E; --cream:#F7F8FA; --ink:#1a1a2e; --line:#E5E8EF; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--cream); display:flex; flex-direction:column; }
+
+  /* Header */
+  .header { background:var(--navy); padding:16px 16px 12px; box-shadow:0 2px 8px rgba(20,38,78,.25); }
+  .header-inner { max-width:680px; margin:0 auto; }
+  .topline { display:flex; justify-content:space-between; align-items:center; }
+  .wordmark { font-family:Georgia,'Times New Roman',serif; font-weight:800; font-size:24px; letter-spacing:.06em; color:#fff; }
+  .wordmark .i { color:var(--red); }
+  .status { font-size:11px; color:#D9DEE9; background:rgba(255,255,255,.12); padding:4px 10px; border-radius:999px; }
+  .status::before { content:"●"; color:#4ADE80; margin-right:5px; }
+  .subline { font-size:11px; letter-spacing:.08em; color:#9AA6BF; margin-top:4px; }
+  .redline { height:3px; background:var(--red); }
+
+  /* Chat */
+  .chat { flex:1; overflow-y:auto; padding:16px; }
+  .chat-inner { max-width:680px; margin:0 auto; }
+  .row { display:flex; margin-bottom:12px; }
+  .row.user { justify-content:flex-end; }
+  .avatar { width:32px; height:32px; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-weight:700; font-size:13px; margin-right:8px; flex-shrink:0; }
+  .avatar .i { color:var(--red); }
+  .bubble { max-width:80%; padding:11px 15px; font-size:14px; line-height:1.55; white-space:pre-wrap; word-wrap:break-word; }
+  .bot .bubble { background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:18px 18px 18px 4px; box-shadow:0 1px 2px rgba(20,38,78,.06); }
+  .user .bubble { background:var(--navy); color:#fff; border-radius:18px 18px 4px 18px; }
+  .bubble b { color:var(--navy); }
+  .user .bubble b { color:#fff; }
+
+  /* Typing dots */
+  .dots span { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--red); margin-right:4px; animation:bounce 1s infinite; }
+  .dots span:nth-child(2){ animation-delay:.15s } .dots span:nth-child(3){ animation-delay:.3s }
+  @keyframes bounce { 0%,60%,100%{ transform:translateY(0) } 30%{ transform:translateY(-6px) } }
+
+  /* Quick chips */
+  .chips { padding:0 16px 8px; }
+  .chips-inner { max-width:680px; margin:0 auto; display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
+  .chip { flex-shrink:0; background:#fff; color:var(--navy); border:1px solid rgba(20,38,78,.18); border-radius:999px; padding:8px 14px; font-size:12px; font-weight:600; cursor:pointer; }
+  .chip:active { background:var(--navy); color:#fff; }
+
+  /* Input */
+  .inputbar { padding:6px 16px 14px; }
+  .inputbar-inner { max-width:680px; margin:0 auto; }
+  .inputbox { display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #E0E4EC; border-radius:999px; padding:8px 8px 8px 18px; box-shadow:0 2px 8px rgba(20,38,78,.08); }
+  .inputbox input { flex:1; border:none; outline:none; font-size:14px; color:var(--navy); background:transparent; }
+  .send { width:38px; height:38px; border:none; border-radius:50%; background:var(--red); color:#fff; font-size:16px; cursor:pointer; flex-shrink:0; }
+  .send:disabled { opacity:.4; }
+  .footnote { text-align:center; font-size:10px; color:#8B93A5; margin-top:8px; }
+  .footnote a { color:var(--navy); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="topline">
+      <div class="wordmark"><span class="i">i</span>NViCTUS</div>
+      <div class="status">Online</div>
+    </div>
+    <div class="subline">INTERNATIONAL SCHOOL · AMRITSAR — PARENT HELP ASSISTANT</div>
+  </div>
+</div>
+<div class="redline"></div>
+
+<div class="chat" id="chat"><div class="chat-inner" id="chatInner"></div></div>
+
+<div class="chips">
+  <div class="chips-inner" id="chips"></div>
+</div>
+
+<div class="inputbar">
+  <div class="inputbar-inner">
+    <div class="inputbox">
+      <input id="msgInput" type="text" placeholder="Apna sawaal likhiye… (fee, admission, transport)" autocomplete="off">
+      <button class="send" id="sendBtn" aria-label="Send">➤</button>
+    </div>
+    <div class="footnote">For official confirmation: <a href="tel:+919877363333">+91 98773 63333</a> · info@invictusschool.edu.in</div>
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG (Phase 3 mein bharenge) ================= */
+const AI_ENDPOINT = ""; // Supabase Edge Function URL yahan aayega (Phase 3)
+
+/* ================= SCHOOL KNOWLEDGE BASE ================= */
+const KB = {
+  fees:
+"💰 <b>School Fees 2026–27 (CBSE)</b>\n\n" +
+"One-time charges:\n" +
+"• Registration: ₹1,500\n• Admission Fee: ₹50,000\n• Refundable Security: ₹8,000\n\n" +
+"Monthly Fees:\n" +
+"• Kindergarten: ₹8,430\n• Class I–VII: ₹10,620\n• Class VIII–X: ₹11,125 (+₹420 Career Counselling)\n• Class XI–XII: ₹10,370 (+₹583 Career Counselling)\n\n" +
+"✦ Fee QUARTERLY pay hoti hai (April, July, October, January)\n" +
+"✦ Younger sibling ko quarterly fee mein 5% discount\n" +
+"✦ NO building fund, NO development fee, NO donation-based admission",
+
+  admission:
+"📝 <b>Admission Process</b>\n\n" +
+"1. Registration form bharein (online ya offline)\n" +
+"2. Interaction/test ki date lein\n" +
+"3. Result ke basis par admission form milega\n" +
+"4. Form result ke 3 din ke andar submit karein\n" +
+"5. Form documents aur fees ke saath accept hota hai (fee cheque se)\n\n" +
+"Entry criteria:\n• LKG–Class II: child se interaction\n• Class III onwards: written test\n• Class 10 (International): interest inventory test",
+
+  documents:
+"📄 <b>Admission ke liye Documents</b>\n\n" +
+"• Medical fitness certificate\n" +
+"• Birth certificate (attested copy)\n" +
+"• Previous year ka progress card (Class I onwards)\n" +
+"• School leaving certificate (agar ho)\n" +
+"• Aadhar card & passport copy\n" +
+"• Passport size photos — child, mother & father",
+
+  transport:
+"🚌 <b>Transport (AC, GPS-enabled buses)</b>\n\n" +
+"Registration: ₹1,000/year\n\n" +
+"Monthly charges (distance-wise):\n" +
+"• 0–4 km: ₹3,000\n• 4–8 km: ₹3,500\n• 8–12 km: ₹4,000\n• 12–16 km: ₹4,500\n• 16–20 km: ₹5,000\n\n" +
+"Har bus mein individual tracking hai. 📍",
+
+  contact:
+"📞 <b>Contact Information</b>\n\n" +
+"Phone: +91 98773 63333\n" +
+"Email: info@invictusschool.edu.in\n" +
+"WhatsApp: wa.me/919877363333\n" +
+"Website: invictusschool.edu.in\n\n" +
+"📍 Silver Oak Enclave, Loharka Road, Amritsar, Punjab 143001",
+
+  about:
+"🏫 <b>About Invictus</b>\n\n" +
+"Invictus International School ek K-12 co-educational International Day School hai (est. 2014), CBSE affiliated. Hum Cambridge Pathway (CAIE) aur AP courses bhi offer karte hain.\n\n" +
+"Campus fully air-conditioned hai, har classroom mein interactive smartboard. Motto: <b>Lead by Example</b> ✨",
+};
+
+const RULES = [
+  { key:"fees", words:["fee","fees","फीस","paisa","paise","kitni","charge","monthly","quarterly","cost","kharcha","price","installment","discount","sibling"] },
+  { key:"admission", words:["admission","dakhila","दाखिला","admit","entry","test","process","register","registration","apply","form","interview","interaction"] },
+  { key:"documents", words:["document","documents","kagaz","कागज","certificate","birth","aadhar","aadhaar","photo","papers","proof","tc","leaving"] },
+  { key:"transport", words:["bus","transport","van","gaadi","गाड़ी","pick","drop","route","conveyance","km","distance"] },
+  { key:"contact", words:["contact","phone","number","call","email","address","location","kahan","कहाँ","map","visit","whatsapp","baat"] },
+  { key:"about", words:["about","school","invictus","board","cbse","cambridge","curriculum","principal","kaisa","facilities","ac","smartboard"] },
+];
+
+const GREET_WORDS = ["hi","hello","hey","namaste","sat sri akal","ssa","good morning","good evening","hii","helo"];
+
+/* ================= CHAT ENGINE ================= */
+const chatInner = document.getElementById("chatInner");
+const chatBox = document.getElementById("chat");
+const input = document.getElementById("msgInput");
+const sendBtn = document.getElementById("sendBtn");
+const history = []; // for AI context
+
+function addBubble(role, html) {
+  const row = document.createElement("div");
+  row.className = "row " + (role === "user" ? "user" : "bot");
+  row.innerHTML = (role === "bot" ? '<div class="avatar"><span class="i">i</span>A</div>' : "") +
+    '<div class="bubble">' + html + "</div>";
+  chatInner.appendChild(row);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  return row;
+}
+
+function showTyping() {
+  return addBubble("bot", '<span class="dots"><span></span><span></span><span></span></span>');
+}
+
+function ruleAnswer(q) {
+  const t = q.toLowerCase();
+  if (GREET_WORDS.some(w => t === w || t.startsWith(w + " ") || t.startsWith(w + "!"))) {
+    return "Sat Sri Akal! 🙏 Main Invictus Assistant hoon. Aap fees, admission, documents, transport ya contact ke baare mein pooch sakte hain.";
+  }
+  let best = null, bestScore = 0;
+  for (const r of RULES) {
+    const score = r.words.filter(w => t.includes(w)).length;
+    if (score > bestScore) { bestScore = score; best = r.key; }
+  }
+  return bestScore > 0 ? KB[best] : null;
+}
+
+async function aiAnswer(q) {
+  if (!AI_ENDPOINT) return null;
+  try {
+    const res = await fetch(AI_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q, history: history.slice(-8) }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.answer || null;
+  } catch (e) { return null; }
+}
+
+const FALLBACK =
+"Mujhe iska exact jawab abhi nahi pata. 🙏\n\nKripya school office se sampark karein:\n📞 +91 98773 63333\n✉️ info@invictusschool.edu.in\n\nAap fees, admission, documents ya transport ke baare mein zaroor pooch sakte hain!";
+
+async function send(textOverride) {
+  const q = (textOverride ?? input.value).trim();
+  if (!q) return;
+  input.value = "";
+  sendBtn.disabled = true;
+  addBubble("user", q.replace(/</g, "&lt;"));
+  history.push({ role: "user", content: q });
+
+  const typing = showTyping();
+  // Small delay so rule answers also feel natural
+  await new Promise(r => setTimeout(r, 500));
+
+  let ans = ruleAnswer(q);
+  if (!ans) ans = await aiAnswer(q);
+  if (!ans) ans = FALLBACK;
+
+  typing.remove();
+  addBubble("bot", ans);
+  history.push({ role: "assistant", content: ans.replace(/<[^>]+>/g, "") });
+  sendBtn.disabled = false;
+  input.focus();
+}
+
+sendBtn.addEventListener("click", () => send());
+input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+
+/* Quick chips */
+const CHIPS = ["Fee structure?", "Admission process?", "Documents required?", "Bus charges?", "Contact number?"];
+const chipsBox = document.getElementById("chips");
+CHIPS.forEach(c => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.textContent = c;
+  b.onclick = () => send(c);
+  chipsBox.appendChild(b);
+});
+
+/* Welcome */
+addBubble("bot",
+"Sat Sri Akal! 🙏 Welcome to <b>Invictus International School, Amritsar</b>.\n\n" +
+"Main Invictus Assistant hoon — aap mujhse fees, admission, documents, transport ya contact ke baare mein pooch sakte hain. English, Hindi ya Punjabi — jaise comfortable ho! 😊");
+</script>
+</body>
+</html>
