@@ -221,6 +221,122 @@ const RULES = [
   { key:"payment", words:["pay","payment","cheque","upi","installment","instalment","mode","bharu","jama","भुगतान","भरना","ਭੁਗਤਾਨ"] },
 ];
 
+const FAQS = [
+/* ===== ADMISSIONS ===== */
+{id:"001",k:["admission","process","apply","enrol","enroll","dakhila"],a:"📝 <b>Admission Process</b>\n\n1. Fill the registration form (online or offline)\n2. Take the interaction/test date\n3. Admission form is given based on the result\n4. Submit the form within 3 days of the result\n5. Form is accepted with documents and fees (fee by cheque)"},
+{id:"002",k:["criteria","interaction","written","eligibility","lkg","interest","inventory"],a:"🎯 <b>Entry Criteria</b>\n\n• LKG–Class II: interaction with the child\n• Class III onwards: written test\n• Class 10 (International): interest inventory test"},
+{id:"003",k:["document","documents","papers","required","kagaz","submit"],a:"📄 <b>Documents Required</b>\n\n• Medical fitness certificate\n• Birth certificate (attested copy)\n• Progress card of previous year (Class I onwards)\n• School leaving certificate (if any)\n• Aadhaar card & passport copy\n• Passport-size photos — child, mother & father"},
+{id:"004",k:["birth"],a:"Yes. An attested copy of the birth certificate is compulsory for every admission, in all classes."},
+{id:"005",k:["tc","transfer","leaving"],a:"A School Leaving Certificate (TC) from the previous school is required for students joining Class I and above. It is not needed for fresh Kindergarten admissions."},
+{id:"006",k:["aadhar","aadhaar"],a:"Yes, a copy of the student's Aadhaar card is required. A passport copy is also accepted alongside it."},
+{id:"007",k:["online","register","registration","website","form"],a:"Yes. The registration form is available both online at invictusschool.edu.in and offline at the school front office."},
+{id:"008",k:["1500"],a:"Yes — the one-time registration fee is ₹1,500. It is non-refundable and separate from the admission fee."},
+{id:"009",k:["donation","capitation","building","fund","bribe"],a:"No. Invictus has no donation-based admission, no building fund and no development fee. Admission is purely on merit and seat availability."},
+{id:"010",k:["deadline","days","within","submit"],a:"The admission form must be submitted within 3 days of the result being declared. After that the seat may be offered to the next candidate."},
+{id:"011",k:["cheque","cash","mode"],a:"The admission fee is accepted by cheque along with the completed form and documents."},
+{id:"012",k:["mid","session","vacancy","seat","seats","available"],a:"Mid-session admissions depend on seat availability in that class. Please call the front office at +91 98773 63333 to check current vacancies."},
+/* ===== FEES & PAYMENTS ===== */
+{id:"013",k:["fee","fees","structure","kitni","kharcha","cost","price","paisa","paise"],a:"💰 <b>School Fees 2026–27 (CBSE)</b>\n\n<b>One-time:</b>\n• Registration: ₹1,500\n• Admission Fee: ₹50,000\n• Refundable Security: ₹8,000\n\n<b>Monthly:</b>\n• Kindergarten: ₹8,430\n• Class I–VII: ₹10,620\n• Class VIII–X: ₹11,125\n• Class XI–XII: ₹10,370"},
+{id:"014",k:["kindergarten","kg","lkg","ukg","nursery"],a:"Kindergarten monthly fee is ₹8,430, paid quarterly."},
+{id:"015",k:["vii","primary","middle"],a:"Class I–VII monthly fee is ₹10,620, paid quarterly."},
+{id:"016",k:["viii","ix","eighth","ninth","tenth"],a:"Class VIII–X monthly fee is ₹11,125, plus ₹420 per month for career counselling."},
+{id:"017",k:["xi","xii","eleventh","twelfth","senior"],a:"Class XI–XII monthly fee is ₹10,370, plus ₹583 per month for career counselling."},
+{id:"018",k:["quarterly","installment","instalment","often","cycle","april","july","october","january"],a:"Fees are paid quarterly — in April, July, October and January."},
+{id:"019",k:["sibling","brother","sister","discount","concession","second"],a:"Yes. A 5% discount on the quarterly fee is given for the younger sibling."},
+{id:"020",k:["50000","refund"],a:"The admission fee of ₹50,000 is a one-time, non-refundable charge. Only the ₹8,000 security deposit is refundable."},
+{id:"021",k:["security","deposit","8000","refundable","caution"],a:"A refundable security deposit of ₹8,000 is collected at the time of admission. It is returned when the student leaves the school, after clearing all dues."},
+{id:"022",k:["late","penalty","fine","overdue","fee"],a:"Fees paid after the due date may attract a late fee. Please confirm the current amount with the accounts office: +91 98773 63333."},
+{id:"023",k:["include","books","stationery","included"],a:"No. Books, stationery and uniform are charged separately and are available at the school store."},
+{id:"024",k:["separate"],a:"No — transport is optional and billed separately, based on distance. Ask me about bus charges to see the rates."},
+{id:"025",k:["accounts","query","queries","bill","receipt","statement"],a:"For fee-related queries please contact the accounts office at +91 98773 63333 or email info@invictusschool.edu.in."},
+/* ===== ABOUT & CURRICULUM ===== */
+{id:"026",k:["about","invictus","tell","kaisa","introduction"],a:"🏫 <b>About Invictus</b>\n\nInvictus International School is a K-12 co-educational International Day School, established in 2014 and affiliated to CBSE.\nThe campus is fully air-conditioned with interactive smartboards in every classroom.\n\nMotto: <b>Lead by Example</b>"},
+{id:"027",k:["board","cbse","affiliation","affiliated"],a:"The school is affiliated to CBSE. It also offers the Cambridge Pathway (CAIE) and Advanced Placement (AP) courses."},
+{id:"028",k:["motto","lead","example","tagline"],a:"The school motto is <b>Lead by Example</b>."},
+{id:"029",k:["established","founded","2014","old"],a:"Invictus International School was established in 2014."},
+{id:"030",k:["coed","coeducational","boys","girls"],a:"Yes, Invictus is a co-educational K-12 day school."},
+{id:"031",k:["day","boarding","hostel","residential"],a:"Invictus is a day school. There is no boarding or hostel facility."},
+{id:"032",k:["cambridge","caie","igcse"],a:"Yes. Alongside CBSE, the school offers the Cambridge Pathway (CAIE) for students in the international stream."},
+{id:"033",k:["ap","advanced","placement"],a:"Yes, Advanced Placement (AP) courses are offered, mainly for students planning to apply to universities abroad."},
+{id:"034",k:["stream","streams","science","commerce","humanities","arts"],a:"🎓 <b>Streams in Class XI–XII</b>\n\n• Science (Medical)\n• Science (Non-Medical)\n• Commerce\n• Humanities"},
+{id:"035",k:["subject","subjects","taught"],a:"Primary classes study English, Hindi, Punjabi, Mathematics, EVS/Science, Social Studies, Computer Science, Art, Music and Physical Education."},
+{id:"036",k:["punjabi","language","third","french"],a:"Yes. Punjabi is taught as a language subject, alongside English and Hindi, as per CBSE and Punjab state norms."},
+{id:"037",k:["ac","airconditioned","conditioned","smartboard","smart","classroom","classrooms"],a:"Yes — the entire campus is air-conditioned, and every classroom has an interactive smartboard."},
+/* ===== TIMINGS & CALENDAR ===== */
+{id:"038",k:["timing","timings","hours","start","begins","dispersal","open","close"],a:"🕗 <b>School Timings</b>\n\n• Kindergarten: 8:30 AM – 12:30 PM\n• Class I–V: 8:00 AM – 2:00 PM\n• Class VI–XII: 8:00 AM – 2:30 PM\n\nGates open 20 minutes before the first bell."},
+{id:"039",k:["saturday","weekend","sunday"],a:"Saturday is an activity and remedial day for senior classes. On Sunday and gazetted holidays the school remains closed."},
+{id:"040",k:["office","reception","front","desk"],a:"The school office is open Monday to Saturday, 8:00 AM – 3:00 PM."},
+{id:"041",k:["academic","march"],a:"The academic session runs from April to March."},
+{id:"042",k:["summer","vacation","vacations","june","may"],a:"The summer break usually runs from late May to the end of June. Exact dates are announced in the school calendar."},
+{id:"043",k:["winter","december"],a:"The winter break usually runs from the end of December to early January."},
+{id:"044",k:["autumn","diwali","festival"],a:"Yes, a short autumn break is given around Diwali."},
+{id:"045",k:["holiday","holidays","list","calendar"],a:"The full holiday list is shared with the school calendar at the start of every session, and through circulars on the parent WhatsApp group."},
+{id:"046",k:["assembly","prayer","morning","bell"],a:"The morning assembly begins at 8:00 AM. Students are expected on campus by 7:45 AM."},
+{id:"047",k:["arrive","tardy"],a:"Late arrivals must report to the front office and collect a late slip before going to class. Repeated lateness is communicated to parents."},
+/* ===== TRANSPORT ===== */
+{id:"048",k:["bus","transport","charge","charges","conveyance","van"],a:"🚌 <b>Transport (AC, GPS-enabled)</b>\n\nRegistration: ₹1,000/year\n\n<b>Monthly by distance:</b>\n• 0–4 km: ₹3,000\n• 4–8 km: ₹3,500\n• 8–12 km: ₹4,000\n• 12–16 km: ₹4,500\n• 16–20 km: ₹5,000"},
+{id:"049",k:["comfortable"],a:"Yes, all school buses are air-conditioned."},
+{id:"050",k:["gps","track","tracking","live","locate"],a:"Yes. Every bus has individual live GPS tracking."},
+{id:"051",k:["attendant","conductor","lady","helper","supervisor"],a:"Yes, every bus has a lady attendant along with the driver."},
+{id:"052",k:["far","km","radius","area","route","routes"],a:"Bus routes currently cover up to 20 km from the campus. Please check with the transport office for your specific area."},
+{id:"053",k:["1000","yearly","annual"],a:"Yes — a one-time transport registration fee of ₹1,000 per year."},
+{id:"054",k:["change","shift","switch","stop","pickup","point"],a:"Route or stop changes can be requested through the transport office. Changes are subject to seat availability on the new route."},
+{id:"055",k:["complaint","issue","driver","delay"],a:"For any transport issue, call the school office at +91 98773 63333 and ask for the transport in-charge."},
+/* ===== UNIFORM ===== */
+{id:"056",k:["uniform","dress","code","wear","clothes"],a:"👕 <b>Uniform</b>\n\n• Regular uniform: Monday to Friday\n• House T-shirt with track pants: on your class PE day\n• Blazer & tie: winter session and formal assemblies"},
+{id:"057",k:["buy","purchase","store","shop"],a:"The uniform is available at the school store on campus."},
+{id:"058",k:["shoe","shoes","footwear","black","white","sneakers"],a:"Black formal shoes on regular days, and white sports shoes on the PE day."},
+{id:"059",k:["blazer","cold","sweater","jacket"],a:"Yes, the school blazer and tie are part of the winter uniform and are compulsory during the winter session."},
+{id:"060",k:["tshirt","track","pants","pe"],a:"The house T-shirt with track pants is worn on the PE/sports day assigned to your class."},
+{id:"061",k:["jewellery","jewelry","accessories","ring","earring","nail","hair","makeup"],a:"Jewellery, coloured nails and elaborate hairstyles are not permitted. Students should come to school in neat, prescribed uniform only."},
+/* ===== HOUSES, CLUBS & ACTIVITIES ===== */
+{id:"062",k:["house","houses","vega","sirius","atlas","polaris"],a:"🏆 <b>School Houses</b>\n\n• Vega\n• Sirius\n• Atlas\n• Polaris\n\nHouses compete through the year in sports, debate, cultural events and academics."},
+{id:"063",k:["assigned","allotted","allocation"],a:"Students are allotted a house at the time of admission. Siblings are usually placed in the same house."},
+{id:"064",k:["championship","points","trophy","overall","winner"],a:"House points earned in sports, cultural events, debate and academics add up through the year to decide the Overall House Championship."},
+{id:"065",k:["club","clubs","activity","activities","eca","join"],a:"🎨 <b>Clubs & Activities</b>\n\n• Debate Club\n• Model United Nations (MUN)\n• Young Entrepreneurship Challenge (YEY)\n• Trinity College London — Speech & Drama\n• Shiamak Davar Dance Academy\n• Arts & Craft Club"},
+{id:"066",k:["debate","debating","speech","public","speaking"],a:"Yes. The Debate Club meets during the weekly activity period and prepares students for inter-school competitions."},
+{id:"067",k:["mun","model","united","nations","conference","delegate"],a:"Yes, Invictus has an active Model United Nations programme, and students participate in regional and national MUN conferences."},
+{id:"068",k:["entrepreneurship","yey","young","challenge","business","startup"],a:"The Young Entrepreneurship Challenge (YEY) lets students build and pitch their own business ideas, guided by mentors."},
+{id:"069",k:["drama","theatre","theater","trinity","acting","play"],a:"Yes — through the Trinity College London Speech & Drama programme, with graded certification."},
+{id:"070",k:["dance","shiamak","davar","choreography"],a:"Yes. The Shiamak Davar Dance Academy conducts dance classes on campus."},
+{id:"071",k:["art","arts","craft","painting","drawing","creative"],a:"Yes, the Arts & Craft Club runs weekly sessions in drawing, painting and craft."},
+{id:"072",k:["music","instrument","guitar","piano","singing","choir","band"],a:"Music is taught as part of the co-curricular programme, and students perform at assemblies and the annual function."},
+{id:"073",k:["period","weekly"],a:"Club sessions are held during the activity period every week."},
+/* ===== CAREER COUNSELLING ===== */
+{id:"074",k:["career","counselling","counseling","counsellor","guidance","cell"],a:"🎓 <b>Career Counselling</b>\n\nA dedicated career counselling cell operates from Class VIII onwards, with one-on-one guidance, aptitude testing and university application support."},
+{id:"075",k:["cialfo","platform","portal"],a:"Cialfo is the career platform used by the school. Students research universities, shortlist colleges and manage applications through it."},
+{id:"076",k:["melange","fair","fest","expo","universities"],a:"MELANGE is the school's annual career fest, where universities and industry experts meet students and parents."},
+{id:"077",k:["sat","psat","centre","center"],a:"Yes — PSAT and SAT are conducted on campus."},
+{id:"078",k:["ic3","movement","member"],a:"Invictus is a member of the IC3 Movement, an international initiative that sets standards for school-based career counselling."},
+{id:"079",k:["420","583"],a:"Career counselling charges: ₹420/month for Class VIII–X and ₹583/month for Class XI–XII, billed with the school fee."},
+/* ===== ACADEMICS, EXAMS & PTM ===== */
+{id:"080",k:["assessment","assessed","exam","exams","examination","evaluation","pattern"],a:"📚 <b>Assessment (CBSE pattern)</b>\n\n• Periodic Test 1 & 2\n• Half-Yearly Examination\n• Annual Examination\n• Internal assessment: notebook submission, subject enrichment, multiple assessments"},
+{id:"081",k:["report","card","cards","result","results","marks","grade","grades"],a:"Report cards are shared with parents after every major assessment, usually during the Parent-Teacher Meeting."},
+{id:"082",k:["attendance","75","minimum","percent","percentage"],a:"A minimum of 75% attendance is required to appear in the Annual Examination."},
+{id:"083",k:["leave","absent","application","sick","permission"],a:"Submit a written application signed by the parent to the class teacher. For leave beyond three days, please inform the front office in advance."},
+{id:"084",k:["ptm","parent","teacher","meeting","meetings"],a:"PTMs are held after every major assessment — usually once a quarter, on a Saturday. Schedules are shared in advance."},
+{id:"085",k:["meet","appointment","individual","separately","discuss"],a:"Yes. Individual appointments with subject teachers can be requested through the front office."},
+{id:"086",k:["homework","assignment","work","daily","hw"],a:"Homework is assigned regularly and is designed to reinforce classwork without overloading the student. Class teachers share the weekly plan."},
+{id:"087",k:["remedial","extra","support","weak","slow","learner","help"],a:"Yes. Remedial and support classes are held for students who need additional help, mainly on Saturdays for senior classes."},
+/* ===== SPORTS ===== */
+{id:"088",k:["sport","sports","facility","facilities","ground","play","playground","games","game"],a:"⚽ <b>Sports Facilities</b>\n\n• Cricket ground and practice nets\n• Basketball and lawn tennis courts\n• Football field\n• Skating rink\n• Indoor: chess, carrom, table tennis\n• Yoga and taekwondo"},
+{id:"089",k:["swimming","pool","swim"],a:"Please confirm the current status of the swimming facility with the school office at +91 98773 63333."},
+{id:"090",k:["athletics"],a:"The Annual Sports Day is held in the winter season. The date is announced in the school calendar."},
+{id:"091",k:["taekwondo","karate","martial","selfdefence","defence","judo"],a:"Yes, taekwondo is offered as part of the physical education programme."},
+{id:"092",k:["interhouse","tournament","tournaments","competition","match","matches"],a:"Yes. Inter-house tournaments run through the year across cricket, football, basketball, athletics and indoor games."},
+/* ===== FACILITIES ===== */
+{id:"093",k:["lab","labs","laboratory","physics","chemistry","biology","robotics","tinkering","atl","computer"],a:"🔬 <b>Labs</b>\n\n• Physics, Chemistry and Biology labs\n• Two computer labs with high-speed internet\n• Robotics & Atal Tinkering Lab\n• Mathematics lab\n\nAll labs are air-conditioned and supervised by subject teachers."},
+{id:"094",k:["library","book","books","reading","borrow","periodical"],a:"Yes. The library holds reference books, periodicals and a quiet reading room, and is open through the school day."},
+{id:"095",k:["canteen","food","meal","meals","lunch","cafeteria","eat","snacks","mess"],a:"The canteen serves freshly prepared, hygienic vegetarian food. Junk food, packaged drinks and chewing gum are not permitted on campus."},
+{id:"096",k:["tiffin","lunchbox","home","packed","bring"],a:"Yes, students may bring a home-packed tiffin. Sharing food is discouraged for hygiene and allergy reasons."},
+{id:"097",k:["water","drinking","ro","purifier","bottle"],a:"Yes — RO-purified drinking water is available on every floor."},
+/* ===== SAFETY & HEALTH ===== */
+{id:"098",k:["safety","safe","security","cctv","camera","cameras","surveillance"],a:"🛡️ <b>Safety</b>\n\n• CCTV coverage across the campus and every bus\n• GPS tracking on all buses with a lady attendant\n• Visitor entry only with photo ID and a gate pass\n• Fire safety equipment and regular evacuation drills"},
+{id:"099",k:["nurse","medical","infirmary","doctor","health","first","aid","injury"],a:"Yes. A full-time nurse and an on-campus infirmary handle first aid. In an emergency, parents are informed immediately by the class teacher."},
+{id:"100",k:["visitor","visitors","entry","gate","pass","guest","id"],a:"Visitors are allowed only with a photo ID and a gate pass issued at reception. Parents picking up a child early must sign the register."},
+{id:"101",k:["contact","phone","number","call","email","address","location","whatsapp","reach","kahan","visit","map"],a:"📞 <b>Contact</b>\n\nPhone: +91 98773 63333\nEmail: info@invictusschool.edu.in\nWhatsApp: wa.me/919877363333\nWebsite: invictusschool.edu.in\n\nSilver Oak Enclave, Loharka Road, Amritsar, Punjab 143001"},
+];
+
 const GREET_WORDS = ["hi","hello","hey","namaste","sat sri akal","ssa","good morning","good evening","hii","helo","ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ","नमस्ते"];
 const THANKS_WORDS = ["thanks","thank you","thankyou","thx","dhanyavaad","dhanyawad","shukriya","धन्यवाद","शुक्रिया","ਧੰਨਵਾਦ","ਸ਼ੁਕਰੀਆ"];
 const BYE_WORDS = ["bye","goodbye","tata","alvida","phir milenge","ok bye","okay bye","ਅਲਵਿਦਾ","अलविदा"];
@@ -253,11 +369,27 @@ function matchList(t, list) {
     t.endsWith(" " + w) || t.includes(" " + w + " "));
 }
 
+function faqMatch(t) {
+  let best = null, bestScore = 0;
+  for (const f of FAQS) {
+    const score = f.k.filter(w =>
+      new RegExp("(^|[^a-z0-9])" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "([^a-z0-9]|$)").test(t)
+    ).length;
+    if (score > bestScore) { bestScore = score; best = f; }
+  }
+  return bestScore > 0 ? best.a : null;
+}
+
 function ruleAnswer(q) {
   const t = q.toLowerCase().trim();
   if (matchList(t, GREET_WORDS)) return KB[LANG].greet;
   if (matchList(t, THANKS_WORDS)) return KB[LANG].thanks;
   if (matchList(t, BYE_WORDS)) return KB[LANG].bye;
+
+  // English: use the full 101-FAQ knowledge base for instant answers.
+  if (LANG === "en") return faqMatch(t);
+
+  // Hindi / Punjabi: use core trilingual answers; rest goes to AI in that language.
   let best = null, bestScore = 0;
   for (const r of RULES) {
     const score = r.words.filter(w => new RegExp("(^|[^a-z])" + w + "([^a-z]|$)").test(t)).length;
@@ -319,7 +451,7 @@ document.querySelectorAll(".langbtn").forEach(btn => {
 });
 
 /* Quick chips (English only) */
-const CHIPS = ["Fee structure?", "Admission process?", "Career Counselling?", "Clubs & Activities?", "Curriculum & Pathways?", "Bus charges?", "Contact number?"];
+const CHIPS = ["Fee structure?", "Admission process?", "School timings?", "Bus charges?", "Clubs & houses?", "Career counselling?", "Contact number?"];
 const chipsBox = document.getElementById("chips");
 CHIPS.forEach(c => {
   const b = document.createElement("button");
